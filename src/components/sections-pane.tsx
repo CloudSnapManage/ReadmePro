@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useMemo } from "react";
-import { GripVertical, Plus, Trash2, RotateCcw, Search, Pencil } from "lucide-react";
+import { GripVertical, Plus, Trash2, RotateCcw, Search, Pencil, FileX } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,7 @@ interface SectionsPaneProps {
   onDeleteSection: (id: string) => void;
   onResetSectionContent: (id: string) => void;
   onResetAll: () => void;
+  onCleanStart: () => void;
   onRenameSection: (id: string, newTitle: string) => void;
 }
 
@@ -33,6 +34,7 @@ export function SectionsPane({
   onDeleteSection,
   onResetSectionContent,
   onResetAll,
+  onCleanStart,
   onRenameSection,
 }: SectionsPaneProps) {
   const [draggedItem, setDraggedItem] = useState<Section | null>(null);
@@ -119,10 +121,16 @@ export function SectionsPane({
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between p-4">
         <h2 className="text-lg font-semibold tracking-tight">Sections</h2>
-        <Button variant="ghost" size="sm" onClick={onResetAll} className="text-muted-foreground hover:text-foreground">
-          <RotateCcw className="mr-2 h-4 w-4" />
-          Reset
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="sm" onClick={onCleanStart} className="text-muted-foreground hover:text-foreground">
+            <FileX className="mr-2 h-4 w-4" />
+            Clean Start
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onResetAll} className="text-muted-foreground hover:text-foreground">
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Reset
+          </Button>
+        </div>
       </div>
       <div className="flex-1 overflow-auto">
         <ScrollArea className="h-full">

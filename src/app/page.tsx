@@ -111,6 +111,15 @@ export default function Home() {
     });
   }, [toast]);
 
+  const handleCleanStart = useCallback(() => {
+    setSections([]);
+    setActiveSectionId(null);
+    toast({
+      title: "Clean Start",
+      description: "All sections have been cleared.",
+    });
+  }, [toast]);
+
   const handleDownload = useCallback(() => {
     const fullMarkdown = sections.map((section) => section.content).join("\n\n");
     const blob = new Blob([fullMarkdown], { type: "text/markdown" });
@@ -153,6 +162,7 @@ export default function Home() {
       onDeleteSection={handleDeleteSection}
       onResetSectionContent={handleResetSectionContent}
       onResetAll={handleReset}
+      onCleanStart={handleCleanStart}
       onRenameSection={handleRenameSection}
     />
   );
