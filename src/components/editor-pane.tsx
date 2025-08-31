@@ -23,8 +23,8 @@ export function EditorPane({ section, onContentChange }: EditorPaneProps) {
       <div className="p-4 border-b">
         <h2 className="text-lg font-semibold tracking-tight">{section.title}</h2>
       </div>
-      <div className="flex-1">
-        <ScrollArea className="h-full">
+      <div className="flex-1 relative">
+        <ScrollArea className="absolute inset-0">
             <Textarea
               value={section.content}
               onChange={(e) => onContentChange(e.target.value)}
