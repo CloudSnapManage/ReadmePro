@@ -26,6 +26,7 @@ export default function Home() {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(
     DEFAULT_SECTIONS[0]?.id || null
   );
+  const [activeTab, setActiveTab] = useState("editor");
 
   const activeSection = useMemo(
     () => sections.find((section) => section.id === activeSectionId),
@@ -39,7 +40,10 @@ export default function Home() {
 
   const handleSectionSelect = useCallback((id: string) => {
     setActiveSectionId(id);
-  }, []);
+    if (isMobile) {
+      setActiveTab("editor");
+    }
+  }, [isMobile]);
 
   const handleContentChange = useCallback((content: string) => {
     if (!activeSectionId) return;
@@ -62,11 +66,14 @@ export default function Home() {
     };
     setSections(prev => [...prev, newSection]);
     setActiveSectionId(newId);
+    if (isMobile) {
+      setActiveTab("editor");
+    }
     toast({
       title: "Section Added",
       description: `"${newSection.title}" has been added to your README.`,
     });
-  }, [toast]);
+  }, [toast, isMobile]);
 
   const handleDeleteSection = useCallback((id: string) => {
     setSections(prev => {
@@ -151,10 +158,10 @@ export default function Home() {
 
   return (
     <div className="flex h-screen w-full flex-col bg-background text-foreground">
-      <Header onDownload={handleDownload} onReset={handleReset} />
+      <Header onDownload={handleDownload} />
       <main className="flex-1 overflow-hidden">
         {isMobile ? (
-          <Tabs defaultValue="editor" className="h-full w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full w-full">
             <TabsList className="grid w-full grid-cols-3 rounded-none h-12">
               <TabsTrigger value="sections" className="rounded-none h-full">Sections</TabsTrigger>
               <TabsTrigger value="editor" className="rounded-none h-full">Editor</TabsTrigger>

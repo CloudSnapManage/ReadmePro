@@ -7,10 +7,9 @@ import { Separator } from "@/components/ui/separator"
 
 interface HeaderProps {
   onDownload: () => void;
-  onReset: () => void;
 }
 
-export function Header({ onDownload, onReset }: HeaderProps) {
+export function Header({ onDownload }: HeaderProps) {
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-16 lg:px-6">
       <div className="flex items-center gap-2 font-semibold">
