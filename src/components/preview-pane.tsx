@@ -1,6 +1,8 @@
 "use client"
 
 import { useMemo } from "react";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Section } from "@/lib/types";
 
@@ -21,10 +23,10 @@ export function PreviewPane({ sections }: PreviewPaneProps) {
       </div>
       <ScrollArea className="flex-1">
         <div className="p-4 sm:p-6">
-          <div className="rounded-md border bg-white p-6 shadow-sm">
-            <pre className="text-sm text-gray-800 font-mono whitespace-pre-wrap break-words">
+          <div className="prose dark:prose-invert prose-sm max-w-none rounded-md border bg-card p-6 shadow-sm text-card-foreground">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {fullMarkdown}
-            </pre>
+            </ReactMarkdown>
           </div>
         </div>
       </ScrollArea>
