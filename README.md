@@ -25,7 +25,7 @@
 -   **Content Control**:
     -   **Reset All**: Revert the entire document back to the default template.
     -   **Clean Start**: Clear all sections for a completely blank canvas.
--   **Download**: Export your final `README.md` file with a single click.
+-   **Download**: Export your final `README.md` and `README.pdf` file with a single click.
 -   **Theming**: Switch between beautiful light and dark modes.
 -   **Polished UI**: Built with modern components and subtle animations for a great user experience.
 
