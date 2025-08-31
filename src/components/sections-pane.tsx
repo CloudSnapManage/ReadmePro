@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useMemo } from "react";
-import { GripVertical, Plus, Trash2, RotateCcw, Search } from "lucide-react";
+import { GripVertical, Plus, Trash2, RotateCcw, Search, Pencil } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ interface SectionsPaneProps {
   onDeleteSection: (id: string) => void;
   onResetSectionContent: (id: string) => void;
   onResetAll: () => void;
+  onRenameSection: (id: string, newTitle: string) => void;
 }
 
 export function SectionsPane({ 
@@ -30,24 +31,26 @@ export function SectionsPane({
   onAddSection,
   onDeleteSection,
   onResetSectionContent,
-  onResetAll
+  onResetAll,
+  onRenameSection,
 }: SectionsPaneProps) {
   const [draggedItem, setDraggedItem] = useState<Section | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
 
-  const handleDragStart = (e: React.DragEvent<HTMLButtonElement>, section: Section) => {
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, section: Section) => {
+    if (editingId) return;
     setDraggedItem(section);
     e.dataTransfer.effectAllowed = "move";
-    e.currentTarget.classList.add('opacity-50');
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLButtonElement>) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLButtonElement>, targetSection: Section) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetSection: Section) => {
     e.preventDefault();
-    e.currentTarget.classList.remove('opacity-50');
     if (!draggedItem || draggedItem.id === targetSection.id) return;
 
     const currentIndex = sections.findIndex((s) => s.id === draggedItem.id);
@@ -61,9 +64,8 @@ export function SectionsPane({
     setDraggedItem(null);
   };
 
-  const handleDragEnd = (e: React.DragEvent<HTMLButtonElement>) => {
+  const handleDragEnd = () => {
     setDraggedItem(null);
-    e.currentTarget.classList.remove('opacity-50');
   };
   
   const filteredAvailableSections = useMemo(() => 
@@ -84,6 +86,33 @@ export function SectionsPane({
     onAddSection({ title: section.title, content: section.content });
   }
 
+  const handleStartEditing = (section: Section) => {
+    setEditingId(section.id);
+    setEditingTitle(section.title);
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditingTitle(e.target.value);
+  };
+
+  const handleFinishEditing = () => {
+    if (editingId && editingTitle.trim()) {
+      onRenameSection(editingId, editingTitle.trim());
+    }
+    setEditingId(null);
+    setEditingTitle("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleFinishEditing();
+    } else if (e.key === 'Escape') {
+      setEditingId(null);
+      setEditingTitle("");
+    }
+  };
+
+
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between p-4">
@@ -101,25 +130,45 @@ export function SectionsPane({
             </h3>
             <div className="flex flex-col gap-1">
               {sections.map((section) => (
-                <div key={section.id} className="group relative rounded-md">
-                  <button
-                    className={cn(
-                      "w-full justify-start rounded-md border border-input bg-background text-left p-2 pr-20 transition-all duration-200",
-                      activeSectionId === section.id ? "border-primary ring-1 ring-primary" : "hover:bg-accent hover:border-accent-foreground/20",
+                <div 
+                  key={section.id} 
+                  className={cn(
+                    "group relative rounded-md border text-left p-2 pr-24 transition-all duration-200",
+                    activeSectionId === section.id ? "border-primary ring-1 ring-primary" : "border-input bg-background hover:bg-accent hover:border-accent-foreground/20",
+                    draggedItem?.id === section.id ? "opacity-50" : ""
+                  )}
+                  draggable={!editingId}
+                  onDragStart={(e) => handleDragStart(e, section)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, section)}
+                  onDragEnd={handleDragEnd}
+                >
+                  <div className="flex items-center">
+                    <GripVertical className="mr-2 h-5 w-5 cursor-move text-muted-foreground transition-opacity group-hover:opacity-100 flex-shrink-0" />
+                    {editingId === section.id ? (
+                      <Input
+                        type="text"
+                        value={editingTitle}
+                        onChange={handleTitleChange}
+                        onBlur={handleFinishEditing}
+                        onKeyDown={handleKeyDown}
+                        autoFocus
+                        className="h-7 p-1 flex-1 text-sm bg-transparent"
+                      />
+                    ) : (
+                      <span
+                        className="truncate flex-1 cursor-pointer"
+                        onClick={() => onSelect(section.id)}
+                        onDoubleClick={() => handleStartEditing(section)}
+                      >
+                        {section.title}
+                      </span>
                     )}
-                    onClick={() => onSelect(section.id)}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, section as any)}
-                    onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, section as any)}
-                    onDragEnd={handleDragEnd}
-                  >
-                    <div className="flex items-center">
-                      <GripVertical className="mr-2 h-5 w-5 cursor-move text-muted-foreground transition-opacity group-hover:opacity-100" />
-                      <span className="truncate flex-1">{section.title}</span>
-                    </div>
-                  </button>
+                  </div>
                   <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleStartEditing(section)}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
                     <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => onResetSectionContent(section.id)}>
                       <RotateCcw className="h-4 w-4" />
                     </Button>

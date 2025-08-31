@@ -128,6 +128,16 @@ export default function Home() {
     });
   }, [sections, toast]);
 
+  const handleRenameSection = useCallback((id: string, newTitle: string) => {
+    setSections(prev =>
+      prev.map(s => (s.id === id ? { ...s, title: newTitle } : s))
+    );
+    toast({
+      title: "Section Renamed",
+      description: `The section has been renamed to "${newTitle}".`,
+    });
+  }, [toast]);
+
   if (isMobile === undefined) {
     return null;
   }
@@ -143,6 +153,7 @@ export default function Home() {
       onDeleteSection={handleDeleteSection}
       onResetSectionContent={handleResetSectionContent}
       onResetAll={handleReset}
+      onRenameSection={handleRenameSection}
     />
   );
 
