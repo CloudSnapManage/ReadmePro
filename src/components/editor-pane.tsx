@@ -23,12 +23,12 @@ export function EditorPane({ section, onContentChange }: EditorPaneProps) {
       <div className="p-4 border-b">
         <h2 className="text-lg font-semibold tracking-tight">{section.title}</h2>
       </div>
-      <div className="flex-1 relative">
-        <ScrollArea className="absolute inset-0">
+      <div className="flex-1 flex flex-col">
+        <ScrollArea className="flex-1">
             <Textarea
               value={section.content}
               onChange={(e) => onContentChange(e.target.value)}
-              className="h-full w-full resize-none rounded-none border-0 bg-transparent p-4 focus-visible:ring-0 focus-visible:ring-offset-0 font-mono"
+              className="h-full w-full min-h-[calc(100vh-10rem)] resize-none rounded-none border-0 bg-transparent p-4 focus-visible:ring-0 focus-visible:ring-offset-0 font-mono"
               aria-label={`${section.title} content editor`}
             />
         </ScrollArea>
