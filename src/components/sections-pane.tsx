@@ -55,7 +55,9 @@ export function SectionsPane({ sections, activeSectionId, onSelect, onOrderChang
             <Button
               key={section.id}
               variant={activeSectionId === section.id ? "secondary" : "ghost"}
-              className={cn("w-full justify-start", {
+              className={cn("w-full justify-start rounded-md border-l-4 border-transparent", 
+                activeSectionId === section.id ? "border-primary bg-primary/10 hover:bg-primary/20" : "hover:bg-accent",
+                {
                 "ring-2 ring-primary": draggedItem?.id === section.id,
               })}
               onClick={() => onSelect(section.id)}
