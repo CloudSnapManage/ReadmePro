@@ -24,7 +24,11 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <ThemeProvider attribute="class" defaultTheme="dark" storageKey="readmepro-theme">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          storageKey="readmepro-theme"
+        >
           {children}
           <Toaster />
         </ThemeProvider>

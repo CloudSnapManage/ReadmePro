@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useTheme as useNextTheme } from "next-themes"
 
 type Theme = "dark" | "light" | "system"
 
@@ -8,6 +9,7 @@ type ThemeProviderProps = {
   children: React.ReactNode
   defaultTheme?: Theme
   storageKey?: string
+  attribute?: string
 }
 
 type ThemeProviderState = {
@@ -26,6 +28,7 @@ export function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "ui-theme",
+  attribute = "class",
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = React.useState<Theme>(() =>
