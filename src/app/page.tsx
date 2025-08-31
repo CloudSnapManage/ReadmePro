@@ -13,9 +13,13 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Home() {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [sections, setSections] = useState<Section[]>(
     () => JSON.parse(JSON.stringify(DEFAULT_SECTIONS))
   );
@@ -117,37 +121,72 @@ export default function Home() {
     });
   }, [sections, toast]);
 
+  if (isMobile === undefined) {
+    return null;
+  }
+
+  const sectionsPane = (
+    <SectionsPane
+      sections={sections}
+      activeSectionId={activeSectionId}
+      availableSections={availableSections}
+      onSelect={handleSectionSelect}
+      onOrderChange={handleSectionOrderChange}
+      onAddSection={handleAddSection}
+      onDeleteSection={handleDeleteSection}
+      onResetSectionContent={handleResetSectionContent}
+      onResetAll={handleReset}
+    />
+  );
+
+  const editorPane = (
+    <EditorPane
+      key={activeSection?.id}
+      section={activeSection}
+      onContentChange={handleContentChange}
+    />
+  );
+
+  const previewPane = <PreviewPane sections={sections} />;
+
   return (
     <div className="flex h-screen w-full flex-col bg-background text-foreground">
       <Header onDownload={handleDownload} onReset={handleReset} />
       <main className="flex-1 overflow-hidden">
-        <ResizablePanelGroup direction="horizontal" className="h-full">
-          <ResizablePanel defaultSize={25} minSize={20} maxSize={30}>
-            <SectionsPane
-              sections={sections}
-              activeSectionId={activeSectionId}
-              availableSections={availableSections}
-              onSelect={handleSectionSelect}
-              onOrderChange={handleSectionOrderChange}
-              onAddSection={handleAddSection}
-              onDeleteSection={handleDeleteSection}
-              onResetSectionContent={handleResetSectionContent}
-              onResetAll={handleReset}
-            />
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={38} minSize={30}>
-            <EditorPane
-              key={activeSection?.id}
-              section={activeSection}
-              onContentChange={handleContentChange}
-            />
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={37} minSize={30}>
-            <PreviewPane sections={sections} />
-          </ResizablePanel>
-        </ResizablePanelGroup>
+        {isMobile ? (
+          <Tabs defaultValue="editor" className="h-full w-full">
+            <TabsList className="grid w-full grid-cols-3 rounded-none h-12">
+              <TabsTrigger value="sections" className="rounded-none h-full">Sections</TabsTrigger>
+              <TabsTrigger value="editor" className="rounded-none h-full">Editor</TabsTrigger>
+              <TabsTrigger value="preview" className="rounded-none h-full">Preview</TabsTrigger>
+            </TabsList>
+            <div className="h-[calc(100vh-8rem)]">
+              <TabsContent value="sections" className="h-full m-0">
+                <ScrollArea className="h-full">{sectionsPane}</ScrollArea>
+              </TabsContent>
+              <TabsContent value="editor" className="h-full m-0">
+                {editorPane}
+              </TabsContent>
+              <TabsContent value="preview" className="h-full m-0">
+                {previewPane}
+              </TabsContent>
+            </div>
+          </Tabs>
+        ) : (
+          <ResizablePanelGroup direction="horizontal" className="h-full">
+            <ResizablePanel defaultSize={25} minSize={20} maxSize={30}>
+              {sectionsPane}
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={38} minSize={30}>
+              {editorPane}
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={37} minSize={30}>
+              {previewPane}
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        )}
       </main>
     </div>
   );
