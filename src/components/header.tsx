@@ -1,6 +1,6 @@
 "use client"
 
-import { Download, RotateCcw } from "lucide-react"
+import { Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Separator } from "@/components/ui/separator"
@@ -18,10 +18,6 @@ export function Header({ onDownload, onReset }: HeaderProps) {
         <span className="">ReadmePro</span>
       </div>
       <div className="ml-auto flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={onReset}>
-          <RotateCcw className="mr-2 h-4 w-4" />
-          Reset
-        </Button>
         <Button size="sm" onClick={onDownload}>
           <Download className="mr-2 h-4 w-4" />
           Download
