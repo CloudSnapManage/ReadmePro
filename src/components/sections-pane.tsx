@@ -38,7 +38,7 @@ export function SectionsPane({
   const handleDragStart = (e: React.DragEvent<HTMLButtonElement>, section: Section) => {
     setDraggedItem(section);
     e.dataTransfer.effectAllowed = "move";
-    e.currentTarget.style.opacity = '0.5';
+    e.currentTarget.classList.add('opacity-50');
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLButtonElement>) => {
@@ -47,7 +47,7 @@ export function SectionsPane({
 
   const handleDrop = (e: React.DragEvent<HTMLButtonElement>, targetSection: Section) => {
     e.preventDefault();
-    e.currentTarget.style.opacity = '1';
+    e.currentTarget.classList.remove('opacity-50');
     if (!draggedItem || draggedItem.id === targetSection.id) return;
 
     const currentIndex = sections.findIndex((s) => s.id === draggedItem.id);
@@ -63,7 +63,7 @@ export function SectionsPane({
 
   const handleDragEnd = (e: React.DragEvent<HTMLButtonElement>) => {
     setDraggedItem(null);
-    e.currentTarget.style.opacity = '1';
+    e.currentTarget.classList.remove('opacity-50');
   };
   
   const filteredAvailableSections = useMemo(() => 
@@ -101,13 +101,11 @@ export function SectionsPane({
             </h3>
             <div className="flex flex-col gap-1">
               {sections.map((section) => (
-                <div key={section.id} className={cn("group relative rounded-md",
-                  activeSectionId === section.id ? "bg-primary/10" : ""
-                )}>
+                <div key={section.id} className="group relative rounded-md">
                   <button
                     className={cn(
-                      "w-full justify-start rounded-md border border-input bg-background text-left p-2 pr-16",
-                      activeSectionId === section.id ? "border-primary ring-1 ring-primary" : "hover:bg-accent",
+                      "w-full justify-start rounded-md border border-input bg-background text-left p-2 pr-20 transition-all duration-200",
+                      activeSectionId === section.id ? "border-primary ring-1 ring-primary" : "hover:bg-accent hover:border-accent-foreground/20",
                     )}
                     onClick={() => onSelect(section.id)}
                     draggable
@@ -117,11 +115,11 @@ export function SectionsPane({
                     onDragEnd={handleDragEnd}
                   >
                     <div className="flex items-center">
-                      <GripVertical className="mr-2 h-5 w-5 cursor-move text-muted-foreground" />
+                      <GripVertical className="mr-2 h-5 w-5 cursor-move text-muted-foreground transition-opacity group-hover:opacity-100" />
                       <span className="truncate flex-1">{section.title}</span>
                     </div>
                   </button>
-                  <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => onResetSectionContent(section.id)}>
                       <RotateCcw className="h-4 w-4" />
                     </Button>
@@ -150,7 +148,7 @@ export function SectionsPane({
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Button variant="outline" className="w-full" onClick={handleAddCustomSection}>
+              <Button variant="outline" className="w-full transition-all hover:bg-primary/5" onClick={handleAddCustomSection}>
                 <Plus className="mr-2 h-4 w-4"/>
                 Custom Section
               </Button>
@@ -163,7 +161,7 @@ export function SectionsPane({
                 <Button
                   key={section.id}
                   variant="ghost"
-                  className="w-full justify-start"
+                  className="w-full justify-start transition-all hover:bg-primary/5 hover:pl-3"
                   onClick={() => handleAddAvailableSection(section)}
                 >
                   {section.title}
