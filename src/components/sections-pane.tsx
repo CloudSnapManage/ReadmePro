@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import type { Section } from "@/lib/types";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SectionsPaneProps {
   sections: Section[];
@@ -38,6 +39,7 @@ export function SectionsPane({
   const [searchTerm, setSearchTerm] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
+  const isMobile = useIsMobile();
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, section: Section) => {
     if (editingId) return;
@@ -165,7 +167,10 @@ export function SectionsPane({
                       </span>
                     )}
                   </div>
-                  <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className={cn(
+                      "absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 transition-opacity",
+                      isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                    )}>
                     <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleStartEditing(section)}>
                       <Pencil className="h-4 w-4" />
                     </Button>
