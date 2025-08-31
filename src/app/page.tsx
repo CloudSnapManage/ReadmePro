@@ -178,7 +178,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen w-full flex-col bg-background text-foreground">
-      <Header onDownload={handleDownload} onCleanStart={handleCleanStart} />
+      <Header onDownload={handleDownload} onCleanStart={handleCleanStart} onResetAll={handleReset}/>
       <main className="flex-1 overflow-hidden">
         {isMobile ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full w-full">
