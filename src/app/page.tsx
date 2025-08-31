@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import type { Section } from "@/lib/types";
 import { DEFAULT_SECTIONS, ALL_SECTIONS } from "@/lib/initial-data";
 import { Header } from "@/components/header";
@@ -16,6 +16,8 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function Home() {
   const { toast } = useToast();
@@ -27,6 +29,8 @@ export default function Home() {
     DEFAULT_SECTIONS[0]?.id || null
   );
   const [activeTab, setActiveTab] = useState("editor");
+  const previewRef = useRef<HTMLDivElement>(null);
+
 
   const activeSection = useMemo(
     () => sections.find((section) => section.id === activeSectionId),
@@ -120,7 +124,7 @@ export default function Home() {
     });
   }, [toast]);
 
-  const handleDownload = useCallback(() => {
+  const handleDownloadMd = useCallback(() => {
     const fullMarkdown = sections.map((section) => section.content).join("\n\n");
     const blob = new Blob([fullMarkdown], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
@@ -136,6 +140,53 @@ export default function Home() {
       description: "Your README.md file is being downloaded.",
     });
   }, [sections, toast]);
+  
+  const handleDownloadPdf = useCallback(async () => {
+    const element = previewRef.current;
+    if (!element) {
+        toast({
+            title: "Error",
+            description: "Preview element not found.",
+            variant: "destructive",
+        });
+        return;
+    }
+
+    toast({
+        title: "Generating PDF",
+        description: "Please wait while your PDF is being created...",
+    });
+
+    try {
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: null,
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'p',
+            unit: 'px',
+            format: [canvas.width, canvas.height]
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save('README.pdf');
+
+        toast({
+            title: "Download Started",
+            description: "Your README.pdf file is being downloaded.",
+        });
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+        toast({
+            title: "PDF Generation Failed",
+            description: "Something went wrong while creating the PDF.",
+            variant: "destructive",
+        });
+    }
+  }, [toast]);
 
   const handleRenameSection = useCallback((id: string, newTitle: string) => {
     setSections(prev =>
@@ -174,11 +225,11 @@ export default function Home() {
     />
   );
 
-  const previewPane = <PreviewPane sections={sections} />;
+  const previewPane = <PreviewPane sections={sections} ref={previewRef} />;
 
   return (
     <div className="flex h-screen w-full flex-col bg-background text-foreground">
-      <Header onDownload={handleDownload} onCleanStart={handleCleanStart} onResetAll={handleReset}/>
+      <Header onDownloadMd={handleDownloadMd} onDownloadPdf={handleDownloadPdf} onCleanStart={handleCleanStart} onResetAll={handleReset}/>
       <main className="flex-1 overflow-hidden">
         {isMobile ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full w-full">

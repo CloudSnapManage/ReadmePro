@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, FileX, RotateCcw } from "lucide-react";
+import { Download, FileX, RotateCcw, ChevronDown, FileText, FileJson } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Separator } from "@/components/ui/separator";
@@ -10,14 +10,21 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
-  onDownload: () => void;
+  onDownloadMd: () => void;
+  onDownloadPdf: () => void;
   onCleanStart: () => void;
   onResetAll: () => void;
 }
 
-export function Header({ onDownload, onCleanStart, onResetAll }: HeaderProps) {
+export function Header({ onDownloadMd, onDownloadPdf, onCleanStart, onResetAll }: HeaderProps) {
   return (
     <header className="flex h-14 shrink-0 items-center gap-4 border-b bg-background px-4 lg:h-16 lg:px-6">
       <div className="flex items-center gap-2 font-semibold">
@@ -69,10 +76,26 @@ export function Header({ onDownload, onCleanStart, onResetAll }: HeaderProps) {
 
         <Separator orientation="vertical" className="h-6" />
         
-        <Button size="sm" onClick={onDownload}>
-          <Download className="mr-2 h-4 w-4" />
-          Download
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm">
+              <Download className="mr-2 h-4 w-4" />
+              Download
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={onDownloadMd}>
+              <FileText className="mr-2 h-4 w-4" />
+              <span>Markdown (.md)</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onDownloadPdf}>
+              <FileJson className="mr-2 h-4 w-4" />
+              <span>PDF (.pdf)</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <ThemeToggle />
       </div>
     </header>
