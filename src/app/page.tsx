@@ -252,15 +252,15 @@ export default function Home() {
           </Tabs>
         ) : (
           <ResizablePanelGroup direction="horizontal" className="h-full">
-            <ResizablePanel defaultSize={25} minSize={20} maxSize={30}>
+            <ResizablePanel defaultSize={20} minSize={15} maxSize={25}>
               {sectionsPane}
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={38} minSize={30}>
+            <ResizablePanel defaultSize={45} minSize={30}>
               {editorPane}
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={37} minSize={30}>
+            <ResizablePanel defaultSize={35} minSize={30}>
               {previewPane}
             </ResizablePanel>
           </ResizablePanelGroup>
