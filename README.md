@@ -54,7 +54,7 @@ Make sure you have Node.js (version 18 or higher) and npm installed on your mach
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/readmepro.git
+    git clone https://github.com/CloudSnapManage/ReadmePro.git
     ```
 2.  **Navigate to the project directory:**
     ```bash
