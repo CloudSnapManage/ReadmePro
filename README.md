@@ -54,7 +54,7 @@ Make sure you have Node.js (version 18 or higher) and npm installed on your mach
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/readmepro.git
+    git clone https://github.com/CloudSnapManage/ReadmePro.git
     ```
 2.  **Navigate to the project directory:**
     ```bash
@@ -73,7 +73,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/your-username/readmepro/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/CloudSnapManage/ReadmePro/issues).
 
 1.  Fork the Project
 2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
