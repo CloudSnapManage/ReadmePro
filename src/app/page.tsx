@@ -162,7 +162,6 @@ export default function Home() {
       onDeleteSection={handleDeleteSection}
       onResetSectionContent={handleResetSectionContent}
       onResetAll={handleReset}
-      onCleanStart={handleCleanStart}
       onRenameSection={handleRenameSection}
     />
   );
@@ -179,7 +178,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen w-full flex-col bg-background text-foreground">
-      <Header onDownload={handleDownload} />
+      <Header onDownload={handleDownload} onCleanStart={handleCleanStart} />
       <main className="flex-1 overflow-hidden">
         {isMobile ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full w-full">
