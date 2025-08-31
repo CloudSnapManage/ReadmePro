@@ -144,6 +144,11 @@ export function SectionsPane({
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, section)}
                   onDragEnd={handleDragEnd}
+                  onClick={() => {
+                    if (editingId !== section.id) {
+                      onSelect(section.id);
+                    }
+                  }}
                 >
                   <div className="flex items-center">
                     <GripVertical className="mr-2 h-5 w-5 cursor-move text-muted-foreground transition-opacity group-hover:opacity-100 flex-shrink-0" />
@@ -160,8 +165,7 @@ export function SectionsPane({
                     ) : (
                       <span
                         className="truncate flex-1 cursor-pointer"
-                        onClick={() => onSelect(section.id)}
-                        onDoubleClick={() => handleStartEditing(section)}
+                        onClick={() => handleStartEditing(section)}
                       >
                         {section.title}
                       </span>
